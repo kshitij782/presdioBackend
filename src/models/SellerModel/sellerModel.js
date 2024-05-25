@@ -19,7 +19,8 @@ const sellerModel = new Schema(
     },
     profileImage: {
       type: String,
-      // required: true,
+      default:
+        "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png",
     },
     sellerProperty: {
       type: [Schema.Types.ObjectId],

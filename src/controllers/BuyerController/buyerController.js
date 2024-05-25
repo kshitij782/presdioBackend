@@ -1,13 +1,13 @@
-import sellerModel from "../../models/SellerModel/sellerModel";
+import buyerModel from "../../models/BuyerModel/buyerModel";
 import {
   success,
   internalServerError,
   badRequest,
 } from "../../helpers/api-response";
 
-const generateAccessTokenAndRefreshToken = async (sellerId) => {
+const generateAccessTokenAndRefreshToken = async (buyerId) => {
   try {
-    const user = await sellerModel.findById(sellerId);
+    const user = await buyerModel.findById(buyerId);
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
     user.refreshToken = refreshToken;
@@ -21,17 +21,22 @@ const generateAccessTokenAndRefreshToken = async (sellerId) => {
   }
 };
 
-export async function sellerSignUp(request, response, next) {
+export async function buyerSignUp(request, response, next) {
   const { username, email, password } = request.body;
+
+  if (!username || !email || !password) {
+    return badRequest(request, response, "", "All fields are required");
+  }
   try {
     const data = {
       username: username,
       email: email,
       password: password,
     };
-    const newSeller = await sellerModel.create(data);
-    return success(request, response, "", "Seller Register Successfully");
+    const buyer = await buyerModel.create(data);
+    return success(request, response, "", "Buyer Register Successfully");
   } catch (error) {
+    console.log(error);
     return internalServerError(
       request,
       response,
@@ -41,22 +46,21 @@ export async function sellerSignUp(request, response, next) {
   }
 }
 
-export async function sellerLogin(request, response, next) {
+export async function buyerLogin(request, response, next) {
   try {
     const { email, password } = request.body;
-
-    const seller = await sellerModel.findOne({ email: email });
-    if (!seller) {
-      return badRequest(request, response, "Seller not Found");
+    const buyer = await buyerModel.findOne({ email: email });
+    if (!buyer) {
+      return badRequest(request, response, "Buyer not Found");
     }
-    const isPasswordValid = await seller.isPasswordCorrect(password);
+    const isPasswordValid = await buyer.isPasswordCorrect(password);
     if (!isPasswordValid) {
       return badRequest(request, response, "", "Password is invalid");
     }
     const { accessToken, refreshToken } =
-      await generateAccessTokenAndRefreshToken(seller._id);
-    const loggedInUser = await sellerModel
-      .findById(seller._id)
+      await generateAccessTokenAndRefreshToken(buyer._id);
+    const loggedInUser = await buyerModel
+      .findById(buyer._id)
       .select("-password");
     const options = {
       httpOnly: true,
@@ -76,22 +80,18 @@ export async function sellerLogin(request, response, next) {
       request,
       response,
       error.message,
-      "Internal Server Error"
+      "Internal server error"
     );
   }
 }
 
-export async function sellerLogout(request, response, next) {
+export async function buyerLogout(request, response, next) {
   try {
-    await sellerModel.findByIdAndUpdate(
-      request.user._id,
-      {
-        $set: {
-          refreshToken: undefined,
-        },
+    await buyerModel.findByIdAndUpdate(request.user._id, {
+      $set: {
+        refreshToken: undefined,
       },
-      { new: true }
-    );
+    });
     const options = {
       httpOnly: true,
       secure: true,
@@ -102,12 +102,11 @@ export async function sellerLogout(request, response, next) {
       .clearCookie("refreshToken", options)
       .json({ message: "seller Logout SuccessFully" });
   } catch (error) {
-    console.log(error.message);
     return internalServerError(
       request,
       response,
       error.message,
-      "Internal Server Error"
+      "Internal server error"
     );
   }
 }

@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-
+import dotenv from "dotenv";
+dotenv.config();
 export async function dbConnect() {
   try {
-    const connection = await mongoose.connect(
-      "mongodb+srv://Rajgupta153:NSaWNLJRch89a0Wz@cluster0.jrcewq9.mongodb.net/Rentify?retryWrites=true&w=majority"
-    );
+    const connection = await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to db");
     return connection;
   } catch (error) {

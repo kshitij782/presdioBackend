@@ -1,6 +1,8 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 const buyerModel = new Schema({
   username: {
     type: String,
@@ -20,7 +22,8 @@ const buyerModel = new Schema({
   },
   profileImage: {
     type: String,
-    required: true,
+    default:
+      "https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png",
   },
   interestedProperty: {
     type: [Schema.Types.ObjectId],
@@ -37,6 +40,9 @@ buyerModel.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
+buyerModel.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 buyerModel.methods.generateAccessToken = function () {
   return jwt.sign(
     {
