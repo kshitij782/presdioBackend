@@ -22,10 +22,13 @@ const generateAccessTokenAndRefreshToken = async (sellerId) => {
 };
 
 export async function sellerSignUp(request, response, next) {
-  const { username, email, password } = request.body;
+  const { firstName,lastName, email, password,phone } = request.body;
+
   try {
     const data = {
-      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
       email: email,
       password: password,
     };

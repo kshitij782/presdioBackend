@@ -5,10 +5,19 @@ import dotenv from "dotenv";
 dotenv.config();
 const sellerModel = new Schema(
   {
-    username: {
+    firstName: {
       type: String,
-      required: [true, "UserName is Required"],
+      required: true,
       trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    phone:{
+      type:String,
+      required:[true,"phoneNumber is Required"],
     },
     email: {
       type: String,

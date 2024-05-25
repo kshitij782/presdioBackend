@@ -22,14 +22,16 @@ const generateAccessTokenAndRefreshToken = async (buyerId) => {
 };
 
 export async function buyerSignUp(request, response, next) {
-  const { username, email, password } = request.body;
+  const { firstName, lastName, email, password, phone } = request.body;
 
-  if (!username || !email || !password) {
+  if (!email || !password || !firstName || !lastName || !phone) {
     return badRequest(request, response, "", "All fields are required");
   }
   try {
     const data = {
-      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      phone: phone,
       email: email,
       password: password,
     };
