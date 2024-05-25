@@ -4,7 +4,12 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 const buyerModel = new Schema({
-  username: {
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  lastName: {
     type: String,
     required: true,
     trim: true,
@@ -18,7 +23,11 @@ const buyerModel = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: [true,"Password is Required"],
+  },
+  phone:{
+    type:String,
+    required:[true,"phoneNumber is Required"],
   },
   profileImage: {
     type: String,
