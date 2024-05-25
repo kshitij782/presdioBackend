@@ -100,7 +100,7 @@ export async function buyerLogout(request, response, next) {
       .status(200)
       .clearCookie("accessToken", options)
       .clearCookie("refreshToken", options)
-      .json({ message: "seller Logout SuccessFully" });
+      .json({ message: "Buyer Logout SuccessFully" });
   } catch (error) {
     return internalServerError(
       request,
