@@ -41,6 +41,10 @@ const propertyModel = new Schema({
     type: [Schema.Types.ObjectId],
     ref: "buyer",
   },
+  likeCount: {
+    type: [Schema.Types.ObjectId],
+    ref: "buyer",
+  },
 });
 
 export default model("property", propertyModel);

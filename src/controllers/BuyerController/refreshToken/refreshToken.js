@@ -2,7 +2,7 @@ import {
   success,
   internalServerError,
   badRequest,
-} from "../../helpers/api-response";
+} from "../../../helpers/api-response";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import buyerModel from "../../../models/BuyerModel/buyerModel";
