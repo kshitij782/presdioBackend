@@ -24,4 +24,5 @@ export async function buyerRoutes(app) {
     buyerViewInterestedProperty
   );
   app.post("/api/v1/buyer/updateProfile", verifyJwt, updateProfile);
+  app.post("")
 }
