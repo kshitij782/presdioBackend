@@ -8,6 +8,7 @@ import {
   sellerViewBuyerDetails,
   updateProfile,
 } from "../../controllers/SellerController/sellerContoller";
+import { refreshToken } from "../../controllers/SellerController/refreshToken/refreshToken";
 import multer from "multer";
 import { upload } from "../../middleware/multer.middleware";
 import { verifyJwt } from "../../middleware/verifyJwt";

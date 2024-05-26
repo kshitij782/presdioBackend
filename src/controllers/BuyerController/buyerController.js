@@ -30,6 +30,11 @@ export async function buyerSignUp(request, response, next) {
   if (!email || !password || !firstName || !lastName || !phone) {
     return badRequest(request, response, "", "All fields are required");
   }
+
+  const result = await buyerModel.find({ email: email });
+  if (result.length > 0) {
+    return badRequest(request, response, "", "Email already exists");
+  }
   try {
     const data = {
       firstName: firstName,
