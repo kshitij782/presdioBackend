@@ -59,44 +59,15 @@ export async function likeTheProperty(request, response, next) {
         "Property not found"
       );
     }
+    const userIndex = property.likeCount.indexOf(loggedUser);
+    if (userIndex > -1) {
+      property.likeCount.splice(userIndex, 1);
+      await property.save();
+      return success(request, response, "Unlike the property");
+    }
     property.likeCount.push(user);
     await property.save();
     return success(request, response, "Like the property");
-  } catch (error) {
-    return internalServerError(
-      request,
-      response,
-      error.message,
-      "Internal server error"
-    );
-  }
-}
-
-export async function unlikeTheProperty(request,response,next){
-  try {
-    const { id } = request.params;
-    const loggedUser = request.user._id;
-    const user = await buyerModel.findById(loggedUser);
-    if (!user) {
-      return badRequest(
-        request,
-        response,
-        "Unauthorized User",
-        "Unauthorized User"
-      );
-    }
-    const property = await propertyModel.findById(id);
-    if (!property) {
-      return badRequest(
-        request,
-        response,
-        "Property not found",
-        "Property not found"
-      );
-    }
-    // property.likeCount.pull(user);
-    await property.save();
-    return success(request, response, "Unlike the property");
   } catch (error) {
     return internalServerError(
       request,
