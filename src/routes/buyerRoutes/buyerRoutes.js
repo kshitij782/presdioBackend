@@ -5,7 +5,9 @@ import {
   buyerInterestedProperty,
   buyerViewInterestedProperty,
   updateProfile,
+  
 } from "../../controllers/BuyerController/buyerController";
+import { refreshToken } from "../../controllers/BuyerController/refreshToken/refreshToken";
 import { verifyJwt } from "../../middleware/verifyJwt";
 export async function buyerRoutes(app) {
   app.post("/api/v1/buyer/signup", buyerSignUp);

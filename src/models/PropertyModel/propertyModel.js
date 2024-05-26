@@ -25,6 +25,14 @@ const propertyModel = new Schema({
     type: String,
     required: [true, "image is required"],
   },
+  bathrooms: {
+    type: Number,
+    required: [true, "bathrooms is required"],
+  },
+  bedrooms: {
+    type: Number,
+    required: [true, "bedrooms is required"],
+  },
   sellerId: {
     type: Schema.Types.ObjectId,
     ref: "seller",

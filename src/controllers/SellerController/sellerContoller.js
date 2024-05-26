@@ -34,6 +34,11 @@ export async function sellerSignUp(request, response, next) {
   const { firstName, lastName, email, password, phone } = request.body;
 
   try {
+    const result = await sellerModel.find({ email: email });
+    if (result.length > 0) {
+      return badRequest(request, response, "Email already exist");
+    }
+
     const data = {
       firstName: firstName,
       lastName: lastName,
@@ -126,7 +131,15 @@ export async function sellerLogout(request, response, next) {
 
 export async function sellerCreateProperty(request, response, next) {
   try {
-    const { propertyName, price, location, pincode, details } = request.body;
+    const {
+      propertyName,
+      price,
+      location,
+      pincode,
+      details,
+      bedrooms,
+      bathrooms,
+    } = request.body;
     const image = request.file.path;
     const loggedUser = request.user._id;
     const imageUrl = await cloudinary.uploader.upload(
@@ -154,6 +167,8 @@ export async function sellerCreateProperty(request, response, next) {
       location: location,
       pincode: pincode,
       details: details,
+      bedrooms: bedrooms,
+      bathrooms: bathrooms,
       image: imageUrl.url,
       sellerId: loggedUser,
       interestedBuyer: [],
@@ -256,9 +271,10 @@ export async function sellerViewBuyerDetails(request, response, next) {
       return badRequest(request, response, "Property Not Found");
     }
 
-    const buyerDetails = await propertyModel
-      .findById(id)
-      .populate({path:"interestedBuyer",select:"firstName lastName email phone"});
+    const buyerDetails = await propertyModel.findById(id).populate({
+      path: "interestedBuyer",
+      select: "firstName lastName email phone",
+    });
     if (!buyerDetails) {
       return badRequest(request, response, "Buyer Not Found");
     }
@@ -273,16 +289,16 @@ export async function sellerViewBuyerDetails(request, response, next) {
   }
 }
 
-export async function updateProfile(request,response,next){
+export async function updateProfile(request, response, next) {
   try {
-    const image=request.file.path;
+    const image = request.file.path;
     const loggedUser = request.user._id;
-    const user=await sellerModel.findById(loggedUser);
-    if(!user){
+    const user = await sellerModel.findById(loggedUser);
+    if (!user) {
       return badRequest(request, response, "User Not Found");
     }
-    const imageUrl=await uploadImageToCloudinary(image);
-    user.profileImage=imageUrl;
+    const imageUrl = await uploadImageToCloudinary(image);
+    user.profileImage = imageUrl;
     await user.save();
     return success(request, response, "", "Profile Updated Successfully");
   } catch (error) {
