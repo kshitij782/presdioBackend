@@ -2,27 +2,27 @@ import { Schema, model } from "mongoose";
 
 const propertyModel = new Schema({
   propertyName: {
-    type: string,
+    type: String,
     required: [true, "property is required"],
   },
   price: {
-    type: number,
+    type: Number,
     required: [true, "price is required"],
   },
   location: {
-    type: string,
+    type: String,
     required: [true, "location is required"],
   },
   pincode: {
-    type: number,
+    type: Number,
     required: [true, "pincode is required"],
   },
   details: {
-    type: string,
+    type: String,
     required: [true, "details is required"],
   },
   image: {
-    type: string,
+    type: String,
     required: [true, "image is required"],
   },
   sellerId: {
@@ -31,7 +31,7 @@ const propertyModel = new Schema({
   },
   interestedBuyer: {
     type: [Schema.Types.ObjectId],
-    ref: "Buyer",
+    ref: "buyer",
   },
 });
 
