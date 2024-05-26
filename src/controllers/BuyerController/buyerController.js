@@ -1,9 +1,12 @@
 import buyerModel from "../../models/BuyerModel/buyerModel";
+import sellerModel from "../../models/SellerModel/sellerModel";
+import propertyModel from "../../models/PropertyModel/propertyModel";
 import {
   success,
   internalServerError,
   badRequest,
 } from "../../helpers/api-response";
+import { uploadImageToCloudinary } from "../../helpers/commonFunction";
 
 const generateAccessTokenAndRefreshToken = async (buyerId) => {
   try {
@@ -89,7 +92,8 @@ export async function buyerLogin(request, response, next) {
 
 export async function buyerLogout(request, response, next) {
   try {
-    await buyerModel.findByIdAndUpdate(request.user._id, {
+    const loggedUser = request.user._id;
+    await buyerModel.findByIdAndUpdate(loggedUser, {
       $set: {
         refreshToken: undefined,
       },
@@ -109,6 +113,75 @@ export async function buyerLogout(request, response, next) {
       response,
       error.message,
       "Internal server error"
+    );
+  }
+}
+
+export async function buyerInterestedProperty(request, response, next) {
+  try {
+    const { id } = request.params;
+    const loggedUser = request.user._id;
+    const buyer = await buyerModel.findById(loggedUser);
+    if (!buyer) {
+      return badRequest(request, response, "Buyer not found");
+    }
+    buyer.interestedProperty.push(id);
+    const property = await propertyModel.findById(id);
+    if (!property) {
+      return badRequest(request, response, "Property not found");
+    }
+    property.interestedBuyer.push(loggedUser);
+    await buyer.save();
+    await property.save();
+    return success(request, response, "Property saved SuccessFully");
+  } catch (error) {
+    return internalServerError(
+      request,
+      response,
+      error.message,
+      "Internal server error"
+    );
+  }
+}
+
+export async function buyerViewInterestedProperty(request, response, next) {
+  try {
+    const loggedUser = request.user._id;
+    const buyer = await buyerModel
+      .findOne({ _id: loggedUser })
+      .populate("interestedProperty")
+      .select("-password");
+    if (!buyer) {
+      return badRequest(request, response, "Buyer not found");
+    }
+    return success(request, response, buyer, "All Property Fetch SuccessFully");
+  } catch (error) {
+    return internalServerError(
+      request,
+      response,
+      error.message,
+      "Internal server error"
+    );
+  }
+}
+export async function updateProfile(request, response, next) {
+  try {
+    const image = request.file.path;
+    const loggedUser = request.user._id;
+    const user = await buyerModel.findById(loggedUser);
+    if (!user) {
+      return badRequest(request, response, "User Not Found");
+    }
+    const imageUrl = await uploadImageToCloudinary(image);
+    user.profileImage = imageUrl;
+    await user.save();
+    return success(request, response, "", "Profile Updated Successfully");
+  } catch (error) {
+    return internalServerError(
+      request,
+      response,
+      error.message,
+      "Internal Server error"
     );
   }
 }

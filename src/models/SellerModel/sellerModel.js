@@ -7,21 +7,18 @@ const sellerModel = new Schema(
   {
     firstName: {
       type: String,
-      required: true,
       trim: true,
     },
     lastName: {
       type: String,
-      required: true,
       trim: true,
     },
-    phone:{
-      type:String,
-      required:[true,"phoneNumber is Required"],
+    phone: {
+      type: String,
+      required: [true, "phoneNumber is Required"],
     },
     email: {
       type: String,
-      required: [true, "Email is Required"],
       unique: true,
       lowercase: true,
       trim: true,
@@ -37,7 +34,6 @@ const sellerModel = new Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
     },
     refreshToken: {
       type: String,
