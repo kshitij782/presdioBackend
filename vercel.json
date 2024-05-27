@@ -1,9 +1,15 @@
 {
   "version": 2,
-  "functions": {
-    "app.js": {
-      "runtime": "@vercel/node@2"
+  "builds": [
+    {
+      "src": "app.js",
+      "use": "@now/node"
     }
-  },
-  "routes": [{ "src": "/(.*)", "dest": "app.js" }]
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.js"
+    }
+  ]
 }
